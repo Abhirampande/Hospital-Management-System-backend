@@ -9,7 +9,7 @@ public class RegisterRequest {
 
     private String username;
     private String password;
-    private String fullName;
+    private String fullname;
     private String email;
     private Set<String> roles;
 

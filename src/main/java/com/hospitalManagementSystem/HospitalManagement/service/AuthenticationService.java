@@ -41,6 +41,7 @@ public class AuthenticationService {
 
         // create User object (step: 1)
         User user = new User();
+        user.setFullName(request.getFullname());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

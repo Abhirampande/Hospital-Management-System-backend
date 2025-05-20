@@ -15,7 +15,7 @@ public class User {
     private String password;
 
     private String email;
-    private String fullName;
+    private String fullname;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -31,13 +31,13 @@ public class User {
     public User(){
 
     }
-    public User(Long id, String username, String password, String fullName, String email){
+    public User(Long id, String username, String password, String fullname, String email){
         super();
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.fullName = fullName;
+        this.fullname = fullname;
 
     }
 
@@ -73,11 +73,11 @@ public class User {
     }
 
     public String getFullName() {
-        return fullName;
+        return fullname;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        this.fullname = fullName;
     }
 
 
