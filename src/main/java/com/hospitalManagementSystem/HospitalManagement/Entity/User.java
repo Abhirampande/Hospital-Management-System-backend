@@ -12,16 +12,21 @@ public class User {
     private Long id;
     private String username;
     private String password;
+
+    private String email;
     private String fullName;
+
+
 
     public User(){
 
     }
-    public User(Long id, String username, String password, String fullName){
+    public User(Long id, String username, String password, String fullName, String email){
         super();
         this.id = id;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.fullName = fullName;
 
     }
@@ -45,6 +50,14 @@ public class User {
         return password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -57,7 +70,22 @@ public class User {
         this.fullName = fullName;
     }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles")
-    private Set<String> roles = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<UserRole> roles = new HashSet<>();
+
+    public Set<UserRole> getRoles(){
+        return roles;
+    }
+    public void setRoles(Set<UserRole> roles){
+        this.roles = roles;
+    }
+
+
 }
+
