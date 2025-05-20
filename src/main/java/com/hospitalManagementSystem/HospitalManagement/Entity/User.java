@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +17,15 @@ public class User {
     private String email;
     private String fullName;
 
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
+    @JoinTable(
+            name = "user_role_mapping",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<UserRole> roles = new HashSet<>();
 
 
     public User(){
@@ -70,14 +80,7 @@ public class User {
         this.fullName = fullName;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<UserRole> roles = new HashSet<>();
 
     public Set<UserRole> getRoles(){
         return roles;

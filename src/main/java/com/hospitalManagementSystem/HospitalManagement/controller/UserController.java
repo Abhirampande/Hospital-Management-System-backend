@@ -53,7 +53,7 @@ public class UserController {
 
         Set<UserRole> roles = new HashSet<>();
         for(String roleName : userRequest.getRoles()){
-            UserRole role = userRoleRepository.findById(roleName)
+            UserRole role = userRoleRepository.findByName(roleName)
                     .orElseThrow(()-> new RuntimeException("Role not found: " + roleName));
             roles.add(role);
         }
@@ -75,7 +75,7 @@ public class UserController {
 
         Set<UserRole> roles = new HashSet<>();
         for (String roleName : userRequest.getRoles()) {
-            UserRole role = userRoleRepository.findById(roleName)
+            UserRole role = userRoleRepository.findByName(roleName)
                     .orElseThrow(() -> new RuntimeException("Role not found : " + roleName));
             roles.add(role);
         }

@@ -5,6 +5,7 @@ import com.hospitalManagementSystem.HospitalManagement.dto.LoginRequest;
 import com.hospitalManagementSystem.HospitalManagement.dto.RegisterRequest;
 import com.hospitalManagementSystem.HospitalManagement.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(@RequestBody RegisterRequest request){
         String token = authenticationService.register(request);
         return ResponseEntity.ok(new JwtResponse(token));

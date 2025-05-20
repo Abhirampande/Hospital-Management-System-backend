@@ -5,6 +5,7 @@ import com.hospitalManagementSystem.HospitalManagement.Entity.UserRole;
 import com.hospitalManagementSystem.HospitalManagement.Entity.User;
 import com.hospitalManagementSystem.HospitalManagement.dto.LoginRequest;
 import com.hospitalManagementSystem.HospitalManagement.dto.RegisterRequest;
+import com.hospitalManagementSystem.HospitalManagement.repository.UserRepository;
 import com.hospitalManagementSystem.HospitalManagement.repository.UserRoleRepository;
 import com.hospitalManagementSystem.HospitalManagement.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,22 +33,35 @@ public class AuthenticationService {
     private final JwtUtil jwtUtil;
 
     private final AuthenticationManager authManager;
+    private final UserRepository userRepository;
 
     public String register(RegisterRequest request) {
         if (userService.existsByUsername(request.getUsername()))
             throw new RuntimeException("Username already exists");
 
+        // create User object (step: 1)
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        UserRole adminRole = roleRepo.findById("ADMIN")
-                .orElse(new UserRole("ADMIN"));
-        user.setRoles(Set.of(adminRole));
-        userService.saveUser(user);
+        // save user first(without roles) step:2
+
+        user = userRepository.save(user);
+
+        // Assign roles
+        UserRole adminRole = roleRepo.findByName("ROLE_ADMIN")
+                        .orElseGet(() -> roleRepo.save(new UserRole("ROLE_ADMIN")));
+        Set<UserRole> roles = new HashSet<>();
+        roles.add(adminRole);
+        user.setRoles(roles);
+
+        // Save user again with roles
+
+        user = userRepository.save(user);
 
         return generateToken(user);
+
 
     }
     public String login(LoginRequest request) {
@@ -54,7 +69,8 @@ public class AuthenticationService {
                 request.getUsername(), request.getPassword()
         ));
 
-        User user = userService.findByUsername(request.getUsername());
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return generateToken(user);
 
     }

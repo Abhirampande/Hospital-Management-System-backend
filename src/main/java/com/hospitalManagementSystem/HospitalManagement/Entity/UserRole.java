@@ -2,37 +2,24 @@ package com.hospitalManagementSystem.HospitalManagement.Entity;
 
 import jakarta.persistence.*;
 
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user_role")
 public class UserRole {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(unique = true, nullable = false)
     private String name;
 
-    public UserRole(){
 
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public UserRole(String name){
-        this.name = name;
-    }
-
-    public String getName(){
-        return name;
-    }
-    public void setName(String name){
-        this.name = name;
+     this.name = name.startsWith("ROLE_") ? name.toUpperCase() : "ROLE_" + name.toUpperCase();
     }
 }

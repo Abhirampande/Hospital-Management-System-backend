@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -43,8 +42,18 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("roles", userDetails.getAuthorities()
+                .stream()
+                .map(Objects::toString)
+                .collect(Collectors.toList()));
 
-        return generateToken(new HashMap<>(), userDetails);
+        return generateToken(extraClaims, userDetails);
+    }
+
+    public List<String> extractRoles(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
