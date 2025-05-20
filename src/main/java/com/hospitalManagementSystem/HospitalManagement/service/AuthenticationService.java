@@ -5,6 +5,7 @@ import com.hospitalManagementSystem.HospitalManagement.Entity.UserRole;
 import com.hospitalManagementSystem.HospitalManagement.Entity.User;
 import com.hospitalManagementSystem.HospitalManagement.dto.LoginRequest;
 import com.hospitalManagementSystem.HospitalManagement.dto.RegisterRequest;
+import com.hospitalManagementSystem.HospitalManagement.exception.UsernameAlreadyExistsException;
 import com.hospitalManagementSystem.HospitalManagement.repository.UserRepository;
 import com.hospitalManagementSystem.HospitalManagement.repository.UserRoleRepository;
 import com.hospitalManagementSystem.HospitalManagement.security.JwtUtil;
@@ -37,7 +38,7 @@ public class AuthenticationService {
 
     public String register(RegisterRequest request) {
         if (userService.existsByUsername(request.getUsername()))
-            throw new RuntimeException("Username already exists");
+            throw new UsernameAlreadyExistsException("Username already exists");
 
         // create User object (step: 1)
         User user = new User();
