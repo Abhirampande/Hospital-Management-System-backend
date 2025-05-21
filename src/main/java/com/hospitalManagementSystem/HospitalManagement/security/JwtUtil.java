@@ -3,6 +3,7 @@ package com.hospitalManagementSystem.HospitalManagement.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class JwtUtil {
                 .setSubject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities()
                         .stream()
-                        .map(Objects::toString)
+                        .map(GrantedAuthority::getAuthority)
                         .toList())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration

@@ -1,5 +1,6 @@
 package com.hospitalManagementSystem.HospitalManagement.security;
 
+import com.hospitalManagementSystem.HospitalManagement.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +23,9 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, @Lazy UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, @Lazy CustomUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
 
         this.userDetailsService = userDetailsService;
@@ -37,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
+      //  System.out.println("Authorization Header: " + authHeader);
         final String jwt;
         final String userEmail;
 
@@ -46,8 +48,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        jwt = authHeader.substring(7); // Remove "Bearer "
-        userEmail = jwtService.extractUsername(jwt);
+        jwt = authHeader.substring(7).trim();// Remove "Bearer"
+        System.out.println("JWT Token Recieved: " + jwt);
+        try{userEmail = jwtService.extractUsername(jwt);}
+        catch (Exception e){
+            System.out.println("Failed to extract username from JWT: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
         // If user is not yet authenticated
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {

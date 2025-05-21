@@ -8,7 +8,7 @@ import com.hospitalManagementSystem.HospitalManagement.dto.RegisterRequest;
 import com.hospitalManagementSystem.HospitalManagement.exception.UsernameAlreadyExistsException;
 import com.hospitalManagementSystem.HospitalManagement.repository.UserRepository;
 import com.hospitalManagementSystem.HospitalManagement.repository.UserRoleRepository;
-import com.hospitalManagementSystem.HospitalManagement.security.JwtUtil;
+import com.hospitalManagementSystem.HospitalManagement.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +31,7 @@ public class AuthenticationService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
 
     private final AuthenticationManager authManager;
     private final UserRepository userRepository;
@@ -85,7 +85,7 @@ public class AuthenticationService {
                             .map(role -> new SimpleGrantedAuthority(role.getName()))
                             .collect(Collectors.toList())
             );
-            return jwtUtil.generateToken(userDetails);
+            return jwtService.generateToken(userDetails);
         }
 
     }

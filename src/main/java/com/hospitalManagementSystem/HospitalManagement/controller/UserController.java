@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
-
+@PreAuthorize("hasRole('ADMIN')")
 public class UserController {
     private final UserService userService;
     private final UserRoleRepository userRoleRepository;
@@ -26,7 +26,7 @@ public class UserController {
 
 
     // Get All Users (Admin only)
-    @GetMapping
+    @GetMapping("/{all}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     //Create new User(Admin)
-    @PostMapping
+    @PostMapping("/username")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> createUser(@RequestBody UserRequest userRequest ){
         if (userService.existsByUsername(userRequest.getUsername())){
@@ -64,6 +64,8 @@ public class UserController {
     }
 
     //update existing user(Admin only)
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody UserRequest userRequest) {
         User existingUser = userService.findByUsername(username);
 
@@ -88,7 +90,7 @@ public class UserController {
 
     //Delete user by username(Admin only)
     @DeleteMapping("/{username}")
-    @PreAuthorize("hasRole('AADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable String username){
         User user = userService.findByUsername(username);
         userService.deleteUser(user);
