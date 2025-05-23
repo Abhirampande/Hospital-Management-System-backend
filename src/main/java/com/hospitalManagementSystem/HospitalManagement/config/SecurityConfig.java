@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/doctor/").hasRole("DOCTOR")
-                        .requestMatchers("/api/patient").hasRole("PATIENT")
+                        .requestMatchers("/api/reports/add", "/api/reports/fetch").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
